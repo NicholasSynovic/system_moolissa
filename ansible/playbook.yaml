@@ -1,0 +1,149 @@
+- name: Install App Managers
+  hosts: myhosts
+  tasks:
+    - name: Install flatpak
+      become: true
+      ansible.builtin.apt:
+        name: flatpak
+        state: present
+
+    - name: Configure flatpak
+      community.general.flatpak_remote:
+        flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+        method: user
+        name: flathub
+        state: present
+
+    - name: Install snapd
+      become: true
+      ansible.builtin.apt:
+        name: snapd
+        state: present
+
+- name: Install Flatpak Apps
+  hosts: myhosts
+  tasks:
+    - name: Install LibreOffice
+      community.general.flatpak:
+        method: user
+        remote: flathub
+        name: org.libreoffice.LibreOffice
+        state: present
+
+    - name: Install Firefox
+      community.general.flatpak:
+        method: user
+        remote: flathub
+        name: org.mozilla.firefox
+        state: present
+
+- name: Install Snap Apps
+  hosts: myhosts
+  tasks:
+    - name: Install Chromium
+      become: true
+      community.general.snap:
+        name: chromium
+        state: present
+
+- name: Install Docker
+  hosts: myhosts
+  become: true
+  tasks:
+    - name: Install Docker Dependencies
+      ansible.builtin.apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+        state: present
+        update_cache: true
+
+    - name: Add Docker GPG Apt Key
+      ansible.builtin.apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker Repository
+      ansible.builtin.apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Install Docker Engine
+      ansible.builtin.apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: present
+        update_cache: true
+
+    - name: Create Docker User Group
+      ansible.builtin.group:
+        name: docker
+        state: present
+        gid: 1750
+
+    - name: Add Current User To Docker Group
+      ansible.builtin.user:
+        append: true
+        name: nicholas
+        groups:
+          - docker
+
+- name: Install VirtualBox
+  hosts: myhosts
+  tasks:
+    - name: Check If VirtualBox Is Installed
+      register: VBOX_INSTALLED
+      ansible.builtin.shell:
+        cmd: which virtualbox
+
+    - name: Download VirtualBox
+      when: VBOX_INSTALLED["rc"] != 0
+      ansible.builtin.uri:
+        dest: /tmp/vbox.deb
+        mode: u+rwx
+        url: https://download.virtualbox.org/virtualbox/7.1.4/virtualbox-7.1_7.1.4-165100~Ubuntu~jammy_amd64.deb
+
+    - name: Install VirtualBox
+      when: VBOX_INSTALLED["rc"] != 0
+      become: true
+      ansible.builtin.apt:
+        deb: /tmp/vbox.deb
+
+- name: Install Development Tools
+  hosts: myhosts
+  tasks:
+    - name: Install NeoVim
+      community.general.homebrew:
+        name: neovim
+        state: present
+
+    - name: Install GNU Stow
+      community.general.homebrew:
+        name: stow
+        state: present
+
+- name: Install Tailscale
+  hosts: myhosts
+  become: true
+  tasks:
+    - name: Download Tailscale GPG Key
+      ansible.builtin.uri:
+        dest: /usr/share/keyrings/tailscale-archive-keyring.gpg
+        url: https://pkgs.tailscale.com/stable/ubuntu/jammy.noarmor.gpg 
+
+    - name: Add Tailscale repository
+      ansible.builtin.uri:
+        dest: /etc/apt/sources.list.d/tailscale.list
+        url: https://pkgs.tailscale.com/stable/ubuntu/jammy.tailscale-keyring.list
+
+    - name: Install Tailscale
+      ansible.builtin.apt:
+        name: tailscale
+        update_cache: true
+        state: present 

@@ -1,4 +1,4 @@
-createDev:
+create-dev:
 	pre-commit install
 
 aptUpdate:

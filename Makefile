@@ -1,3 +1,6 @@
+createDev:
+	pre-commit install
+
 aptUpdate:
 	sudo apt update
 	sudo apt upgrade -y

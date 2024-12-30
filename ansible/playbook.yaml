@@ -133,6 +133,11 @@
         name: stow
         state: present
 
+    - name: Install Python3.10
+      community.general.homebrew:
+        name: python@3.10
+        state: present
+
 - name: Install Tailscale
   hosts: myhosts
   become: true

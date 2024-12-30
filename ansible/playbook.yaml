@@ -46,54 +46,6 @@
         name: chromium
         state: present
 
-- name: Install Docker
-  hosts: myhosts
-  become: true
-  tasks:
-    - name: Install Docker Dependencies
-      ansible.builtin.apt:
-        name:
-          - apt-transport-https
-          - ca-certificates
-          - curl
-          - software-properties-common
-        state: present
-        update_cache: true
-
-    - name: Add Docker GPG Apt Key
-      ansible.builtin.apt_key:
-        url: https://download.docker.com/linux/ubuntu/gpg
-        state: present
-
-    - name: Add Docker Repository
-      ansible.builtin.apt_repository:
-        repo: deb https://download.docker.com/linux/ubuntu focal stable
-        state: present
-
-    - name: Install Docker Engine
-      ansible.builtin.apt:
-        name:
-          - docker-ce
-          - docker-ce-cli
-          - containerd.io
-          - docker-buildx-plugin
-          - docker-compose-plugin
-        state: present
-        update_cache: true
-
-    - name: Create Docker User Group
-      ansible.builtin.group:
-        name: docker
-        state: present
-        gid: 1750
-
-    - name: Add Current User To Docker Group
-      ansible.builtin.user:
-        append: true
-        name: nicholas
-        groups:
-          - docker
-
 - name: Install VirtualBox
   hosts: myhosts
   tasks:
@@ -138,6 +90,18 @@
         name: python@3.10
         state: present
 
+    - name: Install Node Version Manager (NVM)
+      ansible.builtin.shell: |
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+      args:
+        creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
+
+    - name: Install Node v22.12.0
+      ansible.builtin.shell: |
+        . "{{ ansible_env.HOME }}/.nvm/nvm.sh"
+        nvm install 22.12.0
+        nvm use 22.12.0
+
 - name: Install Tailscale
   hosts: myhosts
   become: true
@@ -147,7 +111,6 @@
         dest: /usr/share/keyrings/tailscale-archive-keyring.gpg
         url: https://pkgs.tailscale.com/stable/ubuntu/jammy.noarmor.gpg
         creates: /usr/share/keyrings/tailscale-archive-keyring.gpg
-
 
     - name: Add Tailscale repository
       ansible.builtin.uri:

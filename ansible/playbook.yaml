@@ -75,6 +75,27 @@
       ansible.builtin.apt:
         deb: /tmp/vbox.deb
 
+- name: Install Parsec
+  hosts: myhosts
+  tasks:
+    - name: Check If Parsec Is Installed
+      register: PARSEC_INSTALLED
+      ansible.builtin.shell:
+        cmd: which parsec
+
+    - name: Download Parsec
+      when: PARSEC_INSTALLED["rc"] != 0
+      ansible.builtin.uri:
+        dest: /tmp/parsec.deb
+        mode: u+rwx
+        url: https://builds.parsec.app/package/parsec-linux.deb
+
+    - name: Install Parsec
+      when: PARSEC_INSTALLED["rc"] != 0
+      become: true
+      ansible.builtin.apt:
+        deb: /tmp/parsec.deb
+
 - name: Install Development Tools
   hosts: myhosts
   tasks:

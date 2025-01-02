@@ -37,6 +37,14 @@
         name: org.mozilla.firefox
         state: present
 
+    - name: Install Zotero
+      community.general.flatpak:
+        method: user
+        remote: flathub
+        name: org.zotero.Zotero
+        state: present
+
+
 - name: Install Snap Apps
   hosts: myhosts
   tasks:

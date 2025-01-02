@@ -10,7 +10,9 @@ workstation, Moolissa. Setup scripts are primarily written as Ansible plays.
 Moolissa is an x86-64 machine, and the Ansible scripts are currently **not**
 flexible enough to accomodate other system architectures.
 
-**NOTE**: This repository only contains code to *install* software. Software configurations are stored within [`NicholasSynovic/tool_dotfiles`](https://github.com/NicholasSynovic/tool_dotfiles).
+**NOTE**: This repository only contains code to *install* software. Software
+configurations are stored within
+[`NicholasSynovic/tool_dotfiles`](https://github.com/NicholasSynovic/tool_dotfiles).
 
 ## How To Run
 

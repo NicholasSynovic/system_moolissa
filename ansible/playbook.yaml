@@ -59,6 +59,7 @@
   tasks:
     - name: Check If VirtualBox Is Installed
       register: VBOX_INSTALLED
+      ignore_errors: true
       ansible.builtin.shell:
         cmd: which virtualbox
 
@@ -80,8 +81,9 @@
   tasks:
     - name: Check If Parsec Is Installed
       register: PARSEC_INSTALLED
+      ignore_errors: true
       ansible.builtin.shell:
-        cmd: which parsec
+        cmd: which parsecd
 
     - name: Download Parsec
       when: PARSEC_INSTALLED["rc"] != 0

@@ -121,6 +121,17 @@
         name: python@3.10
         state: present
 
+    - name: Install Lua 5.4.7
+      community.general.homebrew:
+        name: lua@5.4
+        state: present
+
+    - name: Install Luarocks
+      community.general.homebrew:
+        name: luarocks
+        state: present
+
+
     - name: Install Love
       ansible.builtin.uri:
         url: https://github.com/love2d/love/releases/download/11.5/love-11.5-x86_64.AppImage

@@ -121,6 +121,13 @@
         name: python@3.10
         state: present
 
+    - name: Install Love
+      ansible.builtin.uri:
+        url: https://github.com/love2d/love/releases/download/11.5/love-11.5-x86_64.AppImage
+        dest: "{{ ansible_env.HOME }}//.local/bin/love"
+        creates: "{{ ansible_env.HOME }}/.local/bin/love"
+        mode: u+rwx
+
     - name: Install Node Version Manager (NVM)
       ansible.builtin.shell: |
         curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash

@@ -51,6 +51,13 @@
         name: com.parsecgaming.parsec
         state: present
 
+    - name: Install Obsidian
+      community.general.flatpak:
+        method: user
+        remote: flathub
+        name: md.obsidian.Obsidian
+        state: present
+
 - name: Install Snap Apps
   hosts: myhosts
   tasks:

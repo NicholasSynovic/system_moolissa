@@ -58,6 +58,13 @@
         name: md.obsidian.Obsidian
         state: present
 
+    - name: Install Zoom
+      community.general.flatpak:
+        method: user
+        remote: flathub
+        name: us.zoom.Zoom
+        state: present
+
 - name: Install Snap Apps
   hosts: myhosts
   tasks:

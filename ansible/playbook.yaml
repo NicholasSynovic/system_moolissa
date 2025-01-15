@@ -152,6 +152,15 @@
         name: lua-language-server
         state: present
 
+    - name: Install CMake
+      community.general.homebrew:
+        name: cmake
+        state: present
+
+    - name: Install llvm
+      community.general.homebrew:
+        name: llvm
+        state: present
 
 
     - name: Install Love

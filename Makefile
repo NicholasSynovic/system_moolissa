@@ -15,5 +15,8 @@ installAnsible:
 testAnsible:
 	ansible myhosts -m ping -i ansible/inventory.ini
 
-runAnsible:
+run:
+	sudo apt update
 	ansible-playbook -i ansible/inventory.ini --ask-become-pass ansible/playbook.yaml
+	gh auth login --git-protocol ssh --hostname github.com --skip-ssh-key --web
+	gh extension install github/gh-classroom

@@ -39,6 +39,11 @@
         name: cmake
         state: present
 
+    - name: Install gh
+      community.general.homebrew:
+        name: gh
+        state: present
+
     - name: Install llvm
       community.general.homebrew:
         name: llvm

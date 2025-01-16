@@ -14,34 +14,92 @@
         name: flathub
         state: present
 
+    - name: Install Luarocks
+      community.general.homebrew:
+        name: luarocks
+        state: present
+
+    - name: Install Node Version Manager (NVM)
+      ansible.builtin.shell: |
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+      args:
+        creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
+
     - name: Install snapd
       become: true
       ansible.builtin.apt:
         name: snapd
         state: present
 
+- name: Install Development Tools
+  hosts: myhosts
+  tasks:
+    - name: Install CMake
+      community.general.homebrew:
+        name: cmake
+        state: present
+
+    - name: Install llvm
+      community.general.homebrew:
+        name: llvm
+        state: present
+
+    - name: Install Love
+      ansible.builtin.uri:
+        url: https://github.com/love2d/love/releases/download/11.5/love-11.5-x86_64.AppImage
+        dest: "{{ ansible_env.HOME }}//.local/bin/love"
+        creates: "{{ ansible_env.HOME }}/.local/bin/love"
+        mode: u+rwx
+
+    - name: Install Lua 5.4.7
+      community.general.homebrew:
+        name: lua@5.4
+        state: present
+
+    - name: Install Lua Language Server
+      community.general.homebrew:
+        name: lua-language-server
+        state: present
+
+    - name: Install NeoVim
+      community.general.homebrew:
+        name: neovim
+        state: present
+
+    - name: Install Node v22.12.0
+      ansible.builtin.shell: |
+        . "{{ ansible_env.HOME }}/.nvm/nvm.sh"
+        nvm install 22.12.0
+        nvm use 22.12.0
+
+    - name: Install Pre-Commit
+      community.general.homebrew:
+        name: pre-commit
+        state: present
+
+    - name: Install Python 3.10
+      community.general.homebrew:
+        name: python@3.10
+        state: present
+
+    - name: Install Stow
+      community.general.homebrew:
+        name: stow
+        state: present
+
+    - name: Install tmux
+      community.general.homebrew:
+        name: tmux
+        state: present
+
 - name: Install Flatpak Apps
   hosts: myhosts
   tasks:
-    - name: Install LibreOffice
-      community.general.flatpak:
-        method: user
-        remote: flathub
-        name: org.libreoffice.LibreOffice
-        state: present
-
     - name: Install Firefox
       community.general.flatpak:
         method: user
         remote: flathub
         name: org.mozilla.firefox
-        state: present
-
-    - name: Install Zotero
-      community.general.flatpak:
-        method: user
-        remote: flathub
-        name: org.zotero.Zotero
         state: present
 
     - name: Install Kooha
@@ -51,11 +109,11 @@
         name: io.github.seadve.Kooha
         state: present
 
-    - name: Install Parsec
+    - name: Install LibreOffice
       community.general.flatpak:
         method: user
         remote: flathub
-        name: com.parsecgaming.parsec
+        name: org.libreoffice.LibreOffice
         state: present
 
     - name: Install Obsidian
@@ -65,11 +123,25 @@
         name: md.obsidian.Obsidian
         state: present
 
+    - name: Install Parsec
+      community.general.flatpak:
+        method: user
+        remote: flathub
+        name: com.parsecgaming.parsec
+        state: present
+
     - name: Install Zoom
       community.general.flatpak:
         method: user
         remote: flathub
         name: us.zoom.Zoom
+        state: present
+
+    - name: Install Zotero
+      community.general.flatpak:
+        method: user
+        remote: flathub
+        name: org.zotero.Zotero
         state: present
 
 - name: Install Snap Apps
@@ -108,79 +180,6 @@
       become: true
       ansible.builtin.apt:
         deb: /tmp/vbox.deb
-
-- name: Install Development Tools
-  hosts: myhosts
-  tasks:
-    - name: Install NeoVim
-      community.general.homebrew:
-        name: neovim
-        state: present
-
-    - name: Install Pre-Commit
-      community.general.homebrew:
-        name: pre-commit
-        state: present
-
-    - name: Install GNU Stow
-      community.general.homebrew:
-        name: stow
-        state: present
-
-    - name: Install Python 3.10
-      community.general.homebrew:
-        name: python@3.10
-        state: present
-
-    - name: Install Lua 5.4.7
-      community.general.homebrew:
-        name: lua@5.4
-        state: present
-
-    - name: Install tmux
-      community.general.homebrew:
-        name: tmux
-        state: present
-
-    - name: Install Luarocks
-      community.general.homebrew:
-        name: luarocks
-        state: present
-
-    - name: Install Lua Language Server
-      community.general.homebrew:
-        name: lua-language-server
-        state: present
-
-    - name: Install CMake
-      community.general.homebrew:
-        name: cmake
-        state: present
-
-    - name: Install llvm
-      community.general.homebrew:
-        name: llvm
-        state: present
-
-
-    - name: Install Love
-      ansible.builtin.uri:
-        url: https://github.com/love2d/love/releases/download/11.5/love-11.5-x86_64.AppImage
-        dest: "{{ ansible_env.HOME }}//.local/bin/love"
-        creates: "{{ ansible_env.HOME }}/.local/bin/love"
-        mode: u+rwx
-
-    - name: Install Node Version Manager (NVM)
-      ansible.builtin.shell: |
-        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
-      args:
-        creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
-
-    - name: Install Node v22.12.0
-      ansible.builtin.shell: |
-        . "{{ ansible_env.HOME }}/.nvm/nvm.sh"
-        nvm install 22.12.0
-        nvm use 22.12.0
 
 - name: Install Tailscale
   hosts: myhosts

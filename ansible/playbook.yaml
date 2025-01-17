@@ -25,6 +25,12 @@
       args:
         creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
 
+    - name: Install SDKMan
+      ansible.builtin.shell: |
+        curl -o- https://get.sdkman.io?rcupdate=false | bash
+      args:
+        creates: "{{ ansible_env.HOME }}/.local/bin/sdkman/bin/sdkman-init.sh"
+
     - name: Install snapd
       become: true
       ansible.builtin.apt:
@@ -52,7 +58,7 @@
     - name: Install Love
       ansible.builtin.uri:
         url: https://github.com/love2d/love/releases/download/11.5/love-11.5-x86_64.AppImage
-        dest: "{{ ansible_env.HOME }}//.local/bin/love"
+        dest: "{{ ansible_env.HOME }}/.local/bin/love"
         creates: "{{ ansible_env.HOME }}/.local/bin/love"
         mode: u+rwx
 
@@ -85,6 +91,12 @@
     - name: Install Python 3.10
       community.general.homebrew:
         name: python@3.10
+        state: present
+
+    - name: Install OpenSSH Client
+      become: true
+      ansible.builtin.apt:
+        name: openssh-client
         state: present
 
     - name: Install Stow
@@ -163,6 +175,28 @@
       community.general.snap:
         name: vlc
         state: present
+
+- name: Install TLA+ Toolkit 1.7.4
+  hosts: myhosts
+  tasks:
+    - name: Check If TLA+ Toolkit Is Installed
+      register: TLA_INSTALLED
+      ignore_errors: true
+      ansible.builtin.shell:
+        cmd: ls /opt/TLA+Toolbox
+
+    - name: Download TLA+ Toolkit Is Installed
+      when: TLA_INSTALLED["rc"] != 0
+      ansible.builtin.uri:
+        dest: /tmp/tla.deb
+        mode: u+rwx
+        url: https://github.com/tlaplus/tlaplus/releases/download/v1.7.4/TLAToolbox-1.7.4.deb
+
+    - name: Install TLA+ Toolkit
+      when: TLA_INSTALLED["rc"] != 0
+      become: true
+      ansible.builtin.apt:
+        deb: /tmp/tla.deb
 
 - name: Install VirtualBox
   hosts: myhosts

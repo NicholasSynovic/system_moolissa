@@ -45,6 +45,13 @@
         name: cmake
         state: present
 
+    - name: Install Docker LSP
+      ansible.builtin.shell: |
+        . "{{ ansible_env.HOME }}/.nvm/nvm.sh"
+        nvm install 22.12.0
+        nvm use 22.12.0
+        npm install -g dockerfile-language-server-nodejs
+
     - name: Install gh
       community.general.homebrew:
         name: gh
@@ -108,6 +115,12 @@
       community.general.homebrew:
         name: tmux
         state: present
+
+    - name: Install trivy
+      community.general.homebrew:
+        name: trivy
+        state: present
+
 
 - name: Install Flatpak Apps
   hosts: myhosts

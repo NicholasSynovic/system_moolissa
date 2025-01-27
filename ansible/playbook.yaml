@@ -84,6 +84,11 @@
         name: neovim
         state: present
 
+    - name: Install NeoMutt
+      community.general.homebrew:
+        name: neomutt
+        state: present
+
     - name: Install Node v22.12.0
       ansible.builtin.shell: |
         . "{{ ansible_env.HOME }}/.nvm/nvm.sh"
@@ -120,7 +125,6 @@
       community.general.homebrew:
         name: trivy
         state: present
-
 
 - name: Install Flatpak Apps
   hosts: myhosts
@@ -177,6 +181,13 @@
 - name: Install Snap Apps
   hosts: myhosts
   tasks:
+    - name: Install Certbot
+      become: true
+      community.general.snap:
+        name: certbot
+        classic: true
+        state: present
+
     - name: Install Chromium
       become: true
       community.general.snap:

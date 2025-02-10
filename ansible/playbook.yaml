@@ -129,6 +129,13 @@
 - name: Install Flatpak Apps
   hosts: myhosts
   tasks:
+    - name: Install Discord
+      community.general.flatpak:
+        method: user
+        remote: flathub
+        name: com.discordapp.Discord
+        state: present
+
     - name: Install Firefox
       community.general.flatpak:
         method: user

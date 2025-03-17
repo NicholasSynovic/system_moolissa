@@ -40,6 +40,16 @@
 - name: Install Development Tools
   hosts: myhosts
   tasks:
+    - name: Install aria2c
+      community.general.homebrew:
+        name: aria2c
+        state: present
+
+    - name: Install axel
+      community.general.homebrew:
+        name: axel
+        state: present
+
     - name: Install CMake
       community.general.homebrew:
         name: cmake
@@ -52,9 +62,19 @@
         nvm use 22.12.0
         npm install -g dockerfile-language-server-nodejs
 
+    - name: Install fish
+      community.general.homebrew:
+        name: fish
+        state: present
+
     - name: Install gh
       community.general.homebrew:
         name: gh
+        state: present
+
+    - name: Install Hack Nerd Font
+      community.general.homebrew_cask:
+        name: font-hack-nerd-font
         state: present
 
     - name: Install llvm
@@ -109,6 +129,11 @@
       become: true
       ansible.builtin.apt:
         name: openssh-client
+        state: present
+
+    - name: Install Starship
+      community.general.homebrew:
+        name: starship
         state: present
 
     - name: Install Stow
